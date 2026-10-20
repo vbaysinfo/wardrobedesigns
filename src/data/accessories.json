@@ -1,0 +1,12 @@
+[
+  { "id": "soft-close", "name": "Soft-close hinges", "description": "Hydraulic hinges on every hinged shutter.", "unit": "perShutter", "price": 650, "visual": false, "hingedOnly": true },
+  { "id": "led-profile", "name": "LED profile lighting", "description": "Warm LED strip along the top; glows through glass shutters.", "unit": "perMetre", "price": 1400, "visual": true },
+  { "id": "cornice", "name": "Crown cornice", "description": "Decorative moulding along the top edge.", "unit": "perMetre", "price": 950, "visual": true },
+  { "id": "plinth", "name": "Skirting / plinth", "description": "100 mm recessed base plinth.", "unit": "perMetre", "price": 600, "visual": true },
+  { "id": "trouser-rack", "name": "Trouser pull-out", "description": "Telescopic pull-out trouser rack.", "unit": "each", "price": 3800, "visual": false },
+  { "id": "tie-belt", "name": "Tie & belt organiser", "description": "Side-mounted pull-out organiser.", "unit": "each", "price": 1900, "visual": false },
+  { "id": "internal-drawers", "name": "Internal drawer set (2)", "description": "Two concealed drawers behind the shutters.", "unit": "each", "price": 4600, "visual": false },
+  { "id": "locker", "name": "Safe locker drawer", "description": "Lockable internal drawer for valuables.", "unit": "each", "price": 1700, "visual": false },
+  { "id": "inner-mirror", "name": "Inside-door mirror", "description": "Full-length mirror fixed inside one shutter.", "unit": "each", "price": 2400, "visual": false },
+  { "id": "sensor-light", "name": "Sensor lights", "description": "Motion-sensor lights inside each section.", "unit": "perShutter", "price": 900, "visual": false }
+]

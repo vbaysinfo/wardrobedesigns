@@ -1,0 +1,10 @@
+[
+  { "id": "scandi", "name": "Scandinavian Calm", "front": "SC-202", "secondary": "WG-101", "carcass": "WG-101", "loft": "SC-202", "drawer": "WG-101", "handleStyle": "bar-mini", "handleFinish": "black" },
+  { "id": "walnut-charcoal", "name": "Walnut & Charcoal", "front": "WG-102", "secondary": "SC-203", "carcass": "SC-203", "loft": "SC-203", "drawer": "WG-102", "handleStyle": "bar-long", "handleFinish": "gold" },
+  { "id": "sage-garden", "name": "Sage Garden", "front": "SC-205", "secondary": "SC-201", "carcass": "WG-101", "loft": "SC-205", "drawer": "WG-101", "handleStyle": "bar-long", "handleFinish": "gold", "shutterStyle": "fluted" },
+  { "id": "mono-gloss", "name": "Monochrome Gloss", "front": "HG-302", "secondary": "HG-301", "carcass": "HG-301", "loft": "HG-302", "drawer": "HG-301", "handleStyle": "profile", "handleFinish": "silver" },
+  { "id": "royal-teak", "name": "Royal Teak", "front": "WG-103", "secondary": "SC-201", "carcass": "WG-103", "loft": "WG-103", "drawer": "WG-103", "handleStyle": "bar-mini", "handleFinish": "gold", "shutterStyle": "arch" },
+  { "id": "warm-minimal", "name": "Warm Minimal", "front": "SC-201", "secondary": "WG-103", "carcass": "WG-103", "loft": "SC-201", "drawer": "WG-103", "handleStyle": "bar-long", "handleFinish": "black", "shutterStyle": "two-tone" },
+  { "id": "urban-concrete", "name": "Urban Concrete", "front": "TX-402", "secondary": "SC-204", "carcass": "SC-204", "loft": "SC-204", "drawer": "TX-402", "handleStyle": "profile", "handleFinish": "black" },
+  { "id": "boho-cane", "name": "Boho Cane", "front": "TX-403", "secondary": "WG-101", "carcass": "WG-101", "loft": "WG-101", "drawer": "WG-101", "handleStyle": "bar-mini", "handleFinish": "gold", "shutterStyle": "framed" }
+]

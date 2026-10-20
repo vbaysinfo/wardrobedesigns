@@ -1,0 +1,12 @@
+{
+  "currency": "₹",
+  "constructionPerSqft": 950,
+  "loftPerSqft": 800,
+  "drawerEach": 2400,
+  "laminateWastagePct": 15,
+  "installationPerSqft": 90,
+  "otherCharges": 1500,
+  "otherChargesLabel": "Transport & handling",
+  "discountPct": 0,
+  "gstPct": 18
+}

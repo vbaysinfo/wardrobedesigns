@@ -1,0 +1,10 @@
+[
+  { "id": "plain", "name": "Plain", "description": "Flat slab shutter with edge banding.", "ratePerSqft": 0 },
+  { "id": "fluted", "name": "Fluted", "description": "Vertical routed grooves for a tactile, modern look.", "ratePerSqft": 320 },
+  { "id": "framed", "name": "Framed", "description": "Raised outer frame around a flat centre panel.", "ratePerSqft": 260 },
+  { "id": "shaker", "name": "Shaker", "description": "Wide stiles and rails around a recessed panel.", "ratePerSqft": 280 },
+  { "id": "arch", "name": "Arch", "description": "Recessed centre panel with an arched top and moulding.", "ratePerSqft": 380 },
+  { "id": "glass", "name": "Glass Profile", "description": "Aluminium profile frame with tinted glass and interior view.", "ratePerSqft": 650 },
+  { "id": "mirror", "name": "Mirror", "description": "Full mirror panel set in a slim laminate border.", "ratePerSqft": 450 },
+  { "id": "two-tone", "name": "Two-Colour", "description": "Split shutter using the front and accent laminates.", "ratePerSqft": 120 }
+]

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480">
+  <!-- Seamless rattan cane weave texture (tile = 60px). Replace with a scanned laminate image if preferred. -->
+  <defs>
+    <linearGradient id="h" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3c48d"/><stop offset=".5" stop-color="#cfa86a"/><stop offset="1" stop-color="#a98245"/>
+    </linearGradient>
+    <linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e0c088"/><stop offset=".5" stop-color="#c9a263"/><stop offset="1" stop-color="#a27b40"/>
+    </linearGradient>
+    <pattern id="cane" width="60" height="60" patternUnits="userSpaceOnUse">
+      <rect width="60" height="60" fill="#4a3320"/>
+      <g stroke="#b88f52" stroke-width="7" stroke-linecap="square" opacity=".95">
+        <path d="M-15 -15 L75 75 M-15 45 L15 75 M45 -15 L75 15"/>
+        <path d="M75 -15 L-15 75 M15 -15 L-15 15 M75 45 L45 75"/>
+      </g>
+      <rect x="0" y="9" width="60" height="6" fill="url(#h)"/>
+      <rect x="0" y="17" width="60" height="6" fill="url(#h)"/>
+      <rect x="0" y="39" width="60" height="6" fill="url(#h)"/>
+      <rect x="0" y="47" width="60" height="6" fill="url(#h)"/>
+      <rect x="9" y="0" width="6" height="60" fill="url(#v)"/>
+      <rect x="17" y="0" width="6" height="60" fill="url(#v)"/>
+      <rect x="39" y="0" width="6" height="60" fill="url(#v)"/>
+      <rect x="47" y="0" width="6" height="60" fill="url(#v)"/>
+      <rect x="9" y="9" width="14" height="14" fill="#c39b5c"/>
+      <rect x="39" y="39" width="14" height="14" fill="#c39b5c"/>
+      <rect x="39" y="9" width="14" height="14" fill="#b88f52"/>
+      <rect x="9" y="39" width="14" height="14" fill="#b88f52"/>
+    </pattern>
+  </defs>
+  <rect width="480" height="480" fill="url(#cane)"/>
+</svg>

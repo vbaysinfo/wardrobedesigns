@@ -1,0 +1,13 @@
+{
+  "styles": [
+    { "id": "bar-long", "name": "Long Bar Handle", "description": "600 mm vertical bar pull.", "price": 650 },
+    { "id": "bar-mini", "name": "Small Minimalist", "description": "128 mm compact pull.", "price": 280 },
+    { "id": "profile", "name": "Profile Handle", "description": "Full-height aluminium edge profile.", "price": 900 },
+    { "id": "none", "name": "Handleless", "description": "Push-to-open latch, no visible handle.", "price": 450 }
+  ],
+  "finishes": [
+    { "id": "black", "name": "Matte Black", "colors": ["#3a3a3c", "#1b1b1d", "#0d0d0e"], "priceFactor": 1 },
+    { "id": "gold", "name": "Brushed Gold", "colors": ["#f0d58f", "#c39a4a", "#8c6a2a"], "priceFactor": 1.25 },
+    { "id": "silver", "name": "Brushed Silver", "colors": ["#f4f5f6", "#b9bdc2", "#80858b"], "priceFactor": 1 }
+  ]
+}
