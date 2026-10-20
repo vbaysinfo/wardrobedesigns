@@ -36,6 +36,14 @@ export interface Layout {
   doors: DoorGeom[];
   drawers: Rect[];
   plinth: Rect | null;
+  /** Tapered legs (front pair) when the model stands on legs. */
+  legs: Rect[];
+  /** Solid top cap of framed models. */
+  cap: Rect | null;
+  /** Open shelving section and its shelf y-positions. */
+  shelf: { rect: Rect; shelves: number[] } | null;
+  /** Visible carcass edge thickness for this model, mm. */
+  edge: number;
   tracks: Rect[];
   /** Interior area behind the shutters (used for glass doors). */
   interior: Rect;
@@ -47,6 +55,9 @@ const CORNICE = 70;
 const PLINTH = 100;
 const TRACK = 38;
 const OVERLAP = 40;
+const FRAME_EDGE = 42;
+const LEG = 140;
+const CAP = 32;
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
@@ -82,37 +93,62 @@ export function computeLayout(design: Design): Layout {
   const n = clamp(design.shutterCount, L.shutterCount[0], L.shutterCount[1]);
   const sliding = model.doorType === "sliding";
   const acc = new Set(design.accessories);
+  const E = model.decor.frame ? FRAME_EDGE : EDGE;
+  const onLegs = Boolean(model.decor.legs);
 
   const cornice = acc.has("cornice") ? { x: -20, y: 0, w: width + 40, h: CORNICE } : null;
-  let top = cornice ? CORNICE : 0;
+  const cap = !cornice && model.decor.frame ? { x: -12, y: 0, w: width + 24, h: CAP } : null;
+  let top = cornice ? CORNICE : cap ? CAP : 0;
 
   let loft: Layout["loft"] = null;
   if (loftHeight > 0) {
-    const rect = { x: 0, y: top, w: width, h: loftHeight - (cornice ? CORNICE : 0) };
-    const area = { x: EDGE, y: rect.y + EDGE, w: width - 2 * EDGE, h: rect.h - 1.5 * EDGE };
+    const rect = { x: 0, y: top, w: width, h: loftHeight - top };
+    const area = { x: E, y: rect.y + E, w: width - 2 * E, h: rect.h - 1.5 * E };
     const count = sliding ? Math.max(2, Math.round(area.w / 600)) : n;
     loft = { rect, doors: splitRow(area, count, hingedSides(count)) };
     top = loftHeight;
   }
 
-  const body = { x: 0, y: top, w: width, h: height - top };
-  const plinth = acc.has("plinth") ? { x: 25, y: height - PLINTH, w: width - 50, h: PLINTH } : null;
-  const bottom = height - (plinth ? PLINTH : 0) - EDGE;
-  const areaX = EDGE;
-  const areaW = width - 2 * EDGE;
-  const areaTop = body.y + (loft ? EDGE / 2 : EDGE);
+  const legs: Rect[] = onLegs
+    ? [
+        { x: 30, y: height - LEG, w: 50, h: LEG },
+        { x: width - 80, y: height - LEG, w: 50, h: LEG },
+      ]
+    : [];
+  const baseY = height - (onLegs ? LEG : 0);
+  const body = { x: 0, y: top, w: width, h: baseY - top };
+  const plinth = acc.has("plinth") && !onLegs ? { x: 25, y: height - PLINTH, w: width - 50, h: PLINTH } : null;
+  const bottom = baseY - (plinth ? PLINTH : 0) - E;
+  const areaTop = body.y + (loft ? E / 2 : E);
 
-  // External drawers sit in a band at the bottom, one column per shutter.
+  // Open shelving takes a column on one side, separated by a carcass divider.
+  let areaX = E;
+  let areaW = width - 2 * E;
+  let shelf: Layout["shelf"] = null;
+  if (model.openShelf && !sliding) {
+    const sw = Math.min(model.openShelf.width, areaW * 0.4);
+    const rect = { x: model.openShelf.side === "left" ? E : width - E - sw, y: areaTop, w: sw, h: bottom - areaTop };
+    const count = Math.max(2, Math.round(rect.h / 380));
+    const shelves = Array.from({ length: count - 1 }, (_, i) => rect.y + ((i + 1) * rect.h) / count);
+    shelf = { rect, shelves };
+    areaW -= sw + E;
+    if (model.openShelf.side === "left") areaX += sw + E;
+  }
+
+  // External drawers sit in a band at the bottom, under all or some shutter columns.
   const drawers: Rect[] = [];
   let doorsBottom = bottom;
+  const drawerCols = new Set<number>();
   if (model.drawers && !sliding) {
     const { rows, rowHeight } = model.drawers;
+    const cols = (model.drawers.columns ?? Array.from({ length: n }, (_, i) => i)).filter((c) => c < n);
     const colW = (areaW - GAP * (n - 1)) / n;
     for (let r = 0; r < rows; r++) {
       const y = bottom - (r + 1) * rowHeight - r * GAP;
-      for (let c = 0; c < n; c++) drawers.push({ x: areaX + c * (colW + GAP), y, w: colW, h: rowHeight });
+      for (const c of cols) drawers.push({ x: areaX + c * (colW + GAP), y, w: colW, h: rowHeight });
     }
-    doorsBottom = bottom - rows * rowHeight - (rows - 1) * GAP - EDGE;
+    cols.forEach((c) => drawerCols.add(c));
+    doorsBottom = bottom - rows * rowHeight - (rows - 1) * GAP - Math.min(E, 12) - GAP;
   }
 
   const tracks: Rect[] = [];
@@ -130,7 +166,12 @@ export function computeLayout(design: Design): Layout {
       return { index: i, rect: { x: areaX + i * (pw - OVERLAP), y, w: pw, h }, handleSide, layer };
     });
   } else {
-    doors = splitRow({ x: areaX, y: areaTop, w: areaW, h: doorsBottom - areaTop }, n, hingedSides(n));
+    // Shutters over drawers stop above them; the others run full height.
+    const allDrawers = drawerCols.size === n;
+    const fullBottom = allDrawers ? doorsBottom : bottom;
+    doors = splitRow({ x: areaX, y: areaTop, w: areaW, h: fullBottom - areaTop }, n, hingedSides(n)).map((d) =>
+      drawerCols.has(d.index) && !allDrawers ? { ...d, rect: { ...d.rect, h: doorsBottom - areaTop } } : d,
+    );
   }
 
   return {
@@ -147,8 +188,12 @@ export function computeLayout(design: Design): Layout {
     doors,
     drawers,
     plinth,
+    legs,
+    cap,
+    shelf,
+    edge: E,
     tracks,
-    interior: { x: areaX, y: areaTop, w: areaW, h: doorsBottom - areaTop },
+    interior: { x: areaX, y: areaTop, w: areaW, h: bottom - areaTop },
   };
 }
 

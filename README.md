@@ -29,10 +29,19 @@ folder. There is no server code and no runtime Node.js requirement.
 
 ## Features
 
-- **9 models**: two-, three- and four-door; sliding; flexible hinged (2–6 shutters);
-  floor-to-ceiling; with loft; with drawers; traditional arch.
-- **8 shutter styles**: plain, fluted, framed, shaker, arch, glass profile, mirror and
-  two-colour. You can apply one per shutter.
+- **22 wardrobe types in 5 categories**, which you can filter in the Model tab:
+  - *Essentials*: two-, three- and four-door, flexible hinged, with loft, with drawers
+  - *Modern*: sliding, floor-to-ceiling, handleless gloss, fluted statement, glass display, sliding mirror
+  - *Traditional*: arch, colonial panelled, louvered colonial, heritage mirror
+  - *Contemporary*: cane & mirror (wood frame on legs), rattan cane, boho two-tone
+  - *Minimalist*: Scandinavian on legs, open shelves, minimal slab
+
+  Curated types bring their own laminates, handles and per-shutter styles.
+  Plain templates keep your current materials.
+- **13 shutter styles**: plain, fluted, framed, shaker, arch, glass profile, reeded glass,
+  mirror, arched mirror, cane panel, louvered, raised panel and two-colour. You can apply one per shutter.
+- **Construction features**: tapered legs with metal caps, a solid-wood frame with a top cap, drawers
+  under selected shutters, an open shelving column, cornice, plinth and LED lighting.
 - **20 laminates** with search, category and finish filters. You can set separate materials
   for shutters, accent, side panels, loft and drawers, and per-shutter laminates.
 - **Handles**: long bar, small minimalist, profile and handleless, in black, gold or silver.
@@ -53,7 +62,7 @@ All catalogue data is plain JSON in `src/data/`. Edit it and rebuild; no code ch
 
 | File | Contents |
 |---|---|
-| `models.json` | Wardrobe templates: door type, default size, limits, loft/drawers, decor |
+| `models.json` | Wardrobe types: category, door type, default size, limits, loft/drawers, decor (cornice, plinth, legs, frame), open shelf, and optional curated look (`defaultDoors`, `defaultMaterials`, `defaultHandle`, `defaultAccessories`) |
 | `laminates.json` | Laminate name, code, category, finish, price/sq.ft, texture |
 | `shutterStyles.json` | Shutter styles and their extra rate per sq.ft |
 | `handles.json` | Handle styles (price) and finishes (colours, price factor) |

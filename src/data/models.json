@@ -2,118 +2,1176 @@
   {
     "id": "two-door",
     "name": "Two-Door Wardrobe",
+    "category": "Essentials",
     "description": "Compact hinged wardrobe for kids' rooms and guest bedrooms.",
     "doorType": "hinged",
-    "defaults": { "width": 900, "height": 2100, "depth": 600, "loftHeight": 0, "shutterCount": 2 },
-    "limits": { "width": [600, 1200], "height": [1500, 2400], "depth": [450, 750], "loftHeight": [0, 900], "shutterCount": [2, 2] },
+    "defaults": {
+      "width": 900,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 2
+    },
+    "limits": {
+      "width": [
+        600,
+        1200
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        2
+      ]
+    },
     "loft": "optional",
     "drawers": null,
-    "decor": { "cornice": false, "plinth": false },
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
     "defaultShutterStyle": "plain",
     "baseFactor": 1
   },
   {
     "id": "three-door",
     "name": "Three-Door Wardrobe",
+    "category": "Essentials",
     "description": "A pair of hinged doors plus a single door – the most popular bedroom size.",
     "doorType": "hinged",
-    "defaults": { "width": 1350, "height": 2100, "depth": 600, "loftHeight": 0, "shutterCount": 3 },
-    "limits": { "width": [1050, 1800], "height": [1500, 2400], "depth": [450, 750], "loftHeight": [0, 900], "shutterCount": [3, 3] },
+    "defaults": {
+      "width": 1350,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        1050,
+        1800
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        3,
+        3
+      ]
+    },
     "loft": "optional",
     "drawers": null,
-    "decor": { "cornice": false, "plinth": false },
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
     "defaultShutterStyle": "plain",
     "baseFactor": 1
   },
   {
     "id": "four-door",
     "name": "Four-Door Wardrobe",
+    "category": "Essentials",
     "description": "Two pairs of hinged doors for master bedrooms.",
     "doorType": "hinged",
-    "defaults": { "width": 1800, "height": 2100, "depth": 600, "loftHeight": 0, "shutterCount": 4 },
-    "limits": { "width": [1400, 2400], "height": [1500, 2400], "depth": [450, 750], "loftHeight": [0, 900], "shutterCount": [4, 4] },
+    "defaults": {
+      "width": 1800,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 4
+    },
+    "limits": {
+      "width": [
+        1400,
+        2400
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        4,
+        4
+      ]
+    },
     "loft": "optional",
     "drawers": null,
-    "decor": { "cornice": false, "plinth": false },
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
     "defaultShutterStyle": "framed",
     "baseFactor": 1
   },
   {
-    "id": "sliding",
-    "name": "Sliding-Door Wardrobe",
-    "description": "Overlapping sliding shutters on aluminium top and bottom tracks – ideal for tight rooms.",
-    "doorType": "sliding",
-    "defaults": { "width": 1800, "height": 2250, "depth": 650, "loftHeight": 0, "shutterCount": 2 },
-    "limits": { "width": [1200, 3600], "height": [1800, 2700], "depth": [550, 800], "loftHeight": [0, 900], "shutterCount": [2, 4] },
-    "loft": "optional",
-    "drawers": null,
-    "decor": { "cornice": false, "plinth": false },
-    "defaultShutterStyle": "plain",
-    "baseFactor": 1.12
-  },
-  {
     "id": "hinged",
     "name": "Hinged-Door Wardrobe (Flexible)",
+    "category": "Essentials",
     "description": "Choose any number of hinged shutters from 2 to 6 for a custom width.",
     "doorType": "hinged",
-    "defaults": { "width": 1500, "height": 2100, "depth": 600, "loftHeight": 0, "shutterCount": 3 },
-    "limits": { "width": [600, 3600], "height": [1500, 2400], "depth": [450, 750], "loftHeight": [0, 900], "shutterCount": [2, 6] },
+    "defaults": {
+      "width": 1500,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        600,
+        3600
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
     "loft": "optional",
     "drawers": null,
-    "decor": { "cornice": false, "plinth": false },
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
     "defaultShutterStyle": "plain",
     "baseFactor": 1
   },
   {
-    "id": "floor-to-ceiling",
-    "name": "Floor-to-Ceiling Wardrobe",
-    "description": "Full-height shutters that run from skirting to ceiling for a seamless wall of storage.",
-    "doorType": "hinged",
-    "defaults": { "width": 2400, "height": 2900, "depth": 600, "loftHeight": 0, "shutterCount": 4 },
-    "limits": { "width": [1200, 3600], "height": [2500, 3300], "depth": [450, 750], "loftHeight": [0, 0], "shutterCount": [2, 6] },
-    "loft": "none",
-    "drawers": null,
-    "decor": { "cornice": false, "plinth": true },
-    "defaultShutterStyle": "fluted",
-    "baseFactor": 1.08
-  },
-  {
     "id": "with-loft",
     "name": "Wardrobe with Loft",
+    "category": "Essentials",
     "description": "Hinged wardrobe with matching loft cabinets above for seasonal storage.",
     "doorType": "hinged",
-    "defaults": { "width": 1800, "height": 2100, "depth": 600, "loftHeight": 600, "shutterCount": 4 },
-    "limits": { "width": [900, 3600], "height": [1500, 2400], "depth": [450, 750], "loftHeight": [300, 900], "shutterCount": [2, 6] },
+    "defaults": {
+      "width": 1800,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 600,
+      "shutterCount": 4
+    },
+    "limits": {
+      "width": [
+        900,
+        3600
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        300,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
     "loft": "standard",
     "drawers": null,
-    "decor": { "cornice": false, "plinth": false },
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
     "defaultShutterStyle": "plain",
     "baseFactor": 1
   },
   {
     "id": "with-drawers",
     "name": "Wardrobe with Drawers",
+    "category": "Essentials",
     "description": "Hinged shutters above a row of external drawers for everyday essentials.",
     "doorType": "hinged",
-    "defaults": { "width": 1500, "height": 2100, "depth": 600, "loftHeight": 0, "shutterCount": 3 },
-    "limits": { "width": [900, 3000], "height": [1800, 2400], "depth": [450, 750], "loftHeight": [0, 900], "shutterCount": [2, 5] },
+    "defaults": {
+      "width": 1500,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        900,
+        3000
+      ],
+      "height": [
+        1800,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        5
+      ]
+    },
     "loft": "optional",
-    "drawers": { "rows": 2, "rowHeight": 200 },
-    "decor": { "cornice": false, "plinth": true },
+    "drawers": {
+      "rows": 2,
+      "rowHeight": 200
+    },
+    "decor": {
+      "cornice": false,
+      "plinth": true
+    },
     "defaultShutterStyle": "shaker",
     "baseFactor": 1.05
   },
   {
-    "id": "traditional-arch",
-    "name": "Traditional Arch Wardrobe",
-    "description": "Classic wardrobe with arch-style shutters, crown cornice and skirting.",
-    "doorType": "hinged",
-    "defaults": { "width": 1500, "height": 2250, "depth": 600, "loftHeight": 0, "shutterCount": 3 },
-    "limits": { "width": [900, 3000], "height": [1800, 2600], "depth": [450, 750], "loftHeight": [0, 900], "shutterCount": [2, 6] },
+    "id": "sliding",
+    "name": "Sliding-Door Wardrobe",
+    "category": "Modern",
+    "description": "Overlapping sliding shutters on aluminium top and bottom tracks – ideal for tight rooms.",
+    "doorType": "sliding",
+    "defaults": {
+      "width": 1800,
+      "height": 2250,
+      "depth": 650,
+      "loftHeight": 0,
+      "shutterCount": 2
+    },
+    "limits": {
+      "width": [
+        1200,
+        3600
+      ],
+      "height": [
+        1800,
+        2700
+      ],
+      "depth": [
+        550,
+        800
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        4
+      ]
+    },
     "loft": "optional",
     "drawers": null,
-    "decor": { "cornice": true, "plinth": true },
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "plain",
+    "baseFactor": 1.12
+  },
+  {
+    "id": "floor-to-ceiling",
+    "name": "Floor-to-Ceiling Wardrobe",
+    "category": "Modern",
+    "description": "Full-height shutters that run from skirting to ceiling for a seamless wall of storage.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 2400,
+      "height": 2900,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 4
+    },
+    "limits": {
+      "width": [
+        1200,
+        3600
+      ],
+      "height": [
+        2500,
+        3300
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        0
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
+    "loft": "none",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": true
+    },
+    "defaultShutterStyle": "fluted",
+    "baseFactor": 1.08
+  },
+  {
+    "id": "handleless-gloss",
+    "name": "Handleless Gloss",
+    "category": "Modern",
+    "description": "Seamless high-gloss shutters with push-to-open latches and LED lighting.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1800,
+      "height": 2400,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 4
+    },
+    "limits": {
+      "width": [
+        1200,
+        3600
+      ],
+      "height": [
+        1800,
+        2700
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "plain",
+    "defaultMaterials": {
+      "front": "HG-301",
+      "carcass": "HG-301",
+      "loft": "HG-301",
+      "secondary": "WG-101",
+      "drawer": "HG-301"
+    },
+    "defaultHandle": {
+      "style": "none",
+      "finish": "silver"
+    },
+    "defaultAccessories": [
+      "led-profile"
+    ],
+    "baseFactor": 1.1
+  },
+  {
+    "id": "fluted-statement",
+    "name": "Fluted Statement",
+    "category": "Modern",
+    "description": "Full-height fluted shutters in charcoal with long brass pulls.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1500,
+      "height": 2400,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        900,
+        3000
+      ],
+      "height": [
+        1800,
+        2700
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "fluted",
+    "defaultMaterials": {
+      "front": "SC-203",
+      "carcass": "SC-203",
+      "loft": "SC-203",
+      "secondary": "WG-102",
+      "drawer": "SC-203"
+    },
+    "defaultHandle": {
+      "style": "bar-long",
+      "finish": "gold"
+    },
+    "baseFactor": 1.08
+  },
+  {
+    "id": "glass-display",
+    "name": "Glass Display Wardrobe",
+    "category": "Modern",
+    "description": "Reeded-glass centre shutters with interior lighting, flanked by walnut doors.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1800,
+      "height": 2400,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 4
+    },
+    "limits": {
+      "width": [
+        1200,
+        3000
+      ],
+      "height": [
+        1800,
+        2700
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        3,
+        6
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "plain",
+    "defaultDoors": [
+      {},
+      {
+        "style": "reeded-glass"
+      },
+      {
+        "style": "reeded-glass"
+      },
+      {}
+    ],
+    "defaultMaterials": {
+      "front": "WG-102",
+      "carcass": "WG-102",
+      "loft": "WG-102",
+      "secondary": "SC-203",
+      "drawer": "WG-102"
+    },
+    "defaultHandle": {
+      "style": "bar-long",
+      "finish": "black"
+    },
+    "defaultAccessories": [
+      "led-profile"
+    ],
+    "baseFactor": 1.12
+  },
+  {
+    "id": "sliding-mirror",
+    "name": "Sliding Mirror Wardrobe",
+    "category": "Modern",
+    "description": "Three sliding panels with a full mirror in the centre.",
+    "doorType": "sliding",
+    "defaults": {
+      "width": 2400,
+      "height": 2400,
+      "depth": 650,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        1500,
+        3600
+      ],
+      "height": [
+        1800,
+        2700
+      ],
+      "depth": [
+        550,
+        800
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        4
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "plain",
+    "defaultDoors": [
+      {},
+      {
+        "style": "mirror"
+      },
+      {}
+    ],
+    "defaultMaterials": {
+      "front": "WG-104",
+      "carcass": "SC-203",
+      "loft": "WG-104",
+      "secondary": "SC-203",
+      "drawer": "WG-104"
+    },
+    "defaultHandle": {
+      "style": "profile",
+      "finish": "black"
+    },
+    "baseFactor": 1.15
+  },
+  {
+    "id": "traditional-arch",
+    "name": "Traditional Arch Wardrobe",
+    "category": "Traditional",
+    "description": "Classic wardrobe with arch-style shutters, crown cornice and skirting.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1500,
+      "height": 2250,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        900,
+        3000
+      ],
+      "height": [
+        1800,
+        2600
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": true,
+      "plinth": true
+    },
     "defaultShutterStyle": "arch",
     "baseFactor": 1.1
+  },
+  {
+    "id": "colonial-panel",
+    "name": "Colonial Panelled",
+    "category": "Traditional",
+    "description": "Teak wardrobe with raised-and-fielded panels, crown cornice and skirting.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1800,
+      "height": 2250,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 4
+    },
+    "limits": {
+      "width": [
+        1200,
+        3000
+      ],
+      "height": [
+        1800,
+        2600
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": true,
+      "plinth": true
+    },
+    "defaultShutterStyle": "raised-panel",
+    "defaultMaterials": {
+      "front": "WG-103",
+      "carcass": "WG-103",
+      "loft": "WG-103",
+      "secondary": "SC-201",
+      "drawer": "WG-103"
+    },
+    "defaultHandle": {
+      "style": "bar-mini",
+      "finish": "gold"
+    },
+    "baseFactor": 1.12
+  },
+  {
+    "id": "louvered-colonial",
+    "name": "Louvered Colonial",
+    "category": "Traditional",
+    "description": "White louvered shutters with cornice – breathable, coastal-colonial look.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1350,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        900,
+        2400
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        5
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": true,
+      "plinth": true
+    },
+    "defaultShutterStyle": "louvered",
+    "defaultMaterials": {
+      "front": "SC-202",
+      "carcass": "SC-202",
+      "loft": "SC-202",
+      "secondary": "WG-101",
+      "drawer": "SC-202"
+    },
+    "defaultHandle": {
+      "style": "bar-mini",
+      "finish": "gold"
+    },
+    "baseFactor": 1.1
+  },
+  {
+    "id": "heritage-mirror",
+    "name": "Heritage Mirror Wardrobe",
+    "category": "Traditional",
+    "description": "Dark walnut arch shutters around an arched centre mirror, with drawers below.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1500,
+      "height": 2250,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        1200,
+        2400
+      ],
+      "height": [
+        1800,
+        2600
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        3,
+        3
+      ]
+    },
+    "loft": "optional",
+    "drawers": {
+      "rows": 2,
+      "rowHeight": 180,
+      "columns": [
+        1
+      ],
+      "style": "framed"
+    },
+    "decor": {
+      "cornice": true,
+      "plinth": true
+    },
+    "defaultShutterStyle": "arch",
+    "defaultDoors": [
+      {},
+      {
+        "style": "mirror-arch"
+      },
+      {}
+    ],
+    "defaultMaterials": {
+      "front": "WG-102",
+      "carcass": "WG-102",
+      "loft": "WG-102",
+      "secondary": "SC-201",
+      "drawer": "WG-102"
+    },
+    "defaultHandle": {
+      "style": "bar-mini",
+      "finish": "gold"
+    },
+    "baseFactor": 1.15
+  },
+  {
+    "id": "cane-mirror",
+    "name": "Cane & Mirror Wardrobe",
+    "category": "Contemporary",
+    "description": "Solid-wood frame on tapered legs with a cane-panel door, arched mirror door and fluted drawers.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1000,
+      "height": 2000,
+      "depth": 580,
+      "loftHeight": 0,
+      "shutterCount": 2
+    },
+    "limits": {
+      "width": [
+        800,
+        1400
+      ],
+      "height": [
+        1700,
+        2300
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        0
+      ],
+      "shutterCount": [
+        2,
+        2
+      ]
+    },
+    "loft": "none",
+    "drawers": {
+      "rows": 2,
+      "rowHeight": 170,
+      "columns": [
+        1
+      ],
+      "style": "fluted"
+    },
+    "decor": {
+      "cornice": false,
+      "plinth": false,
+      "legs": true,
+      "frame": true
+    },
+    "defaultShutterStyle": "mirror-arch",
+    "defaultDoors": [
+      {
+        "style": "cane"
+      },
+      {}
+    ],
+    "defaultMaterials": {
+      "front": "WG-103",
+      "carcass": "WG-103",
+      "loft": "WG-103",
+      "secondary": "SC-201",
+      "drawer": "WG-103"
+    },
+    "defaultHandle": {
+      "style": "bar-long",
+      "finish": "gold"
+    },
+    "baseFactor": 1.2
+  },
+  {
+    "id": "rattan-cane",
+    "name": "Rattan Cane Wardrobe",
+    "category": "Contemporary",
+    "description": "Three cane-panel shutters in natural oak, raised on brass-capped legs.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1500,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        1000,
+        2400
+      ],
+      "height": [
+        1700,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        0
+      ],
+      "shutterCount": [
+        2,
+        4
+      ]
+    },
+    "loft": "none",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false,
+      "legs": true,
+      "frame": true
+    },
+    "defaultShutterStyle": "cane",
+    "defaultMaterials": {
+      "front": "WG-101",
+      "carcass": "WG-101",
+      "loft": "WG-101",
+      "secondary": "SC-201",
+      "drawer": "WG-101"
+    },
+    "defaultHandle": {
+      "style": "bar-mini",
+      "finish": "gold"
+    },
+    "baseFactor": 1.15
+  },
+  {
+    "id": "boho-two-tone",
+    "name": "Boho Two-Tone",
+    "category": "Contemporary",
+    "description": "Terracotta and oak two-colour shutters on a framed body.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1350,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        900,
+        2400
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        5
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": true,
+      "frame": true
+    },
+    "defaultShutterStyle": "two-tone",
+    "defaultMaterials": {
+      "front": "WG-101",
+      "secondary": "SC-206",
+      "carcass": "WG-101",
+      "loft": "WG-101",
+      "drawer": "WG-101"
+    },
+    "defaultHandle": {
+      "style": "bar-mini",
+      "finish": "gold"
+    },
+    "baseFactor": 1
+  },
+  {
+    "id": "scandi-legs",
+    "name": "Scandinavian on Legs",
+    "category": "Minimalist",
+    "description": "Matte white doors in a light oak frame, lifted on slim legs.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1000,
+      "height": 1900,
+      "depth": 550,
+      "loftHeight": 0,
+      "shutterCount": 2
+    },
+    "limits": {
+      "width": [
+        700,
+        1600
+      ],
+      "height": [
+        1500,
+        2200
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        0
+      ],
+      "shutterCount": [
+        2,
+        3
+      ]
+    },
+    "loft": "none",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false,
+      "legs": true,
+      "frame": true
+    },
+    "defaultShutterStyle": "plain",
+    "defaultMaterials": {
+      "front": "SC-202",
+      "carcass": "WG-105",
+      "loft": "SC-202",
+      "secondary": "WG-105",
+      "drawer": "SC-202"
+    },
+    "defaultHandle": {
+      "style": "bar-mini",
+      "finish": "black"
+    },
+    "baseFactor": 1
+  },
+  {
+    "id": "open-shelves",
+    "name": "Wardrobe with Open Shelves",
+    "category": "Minimalist",
+    "description": "Hinged wardrobe with an open display column for books and décor.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1800,
+      "height": 2100,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        1300,
+        3000
+      ],
+      "height": [
+        1500,
+        2400
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        4
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "plain",
+    "openShelf": {
+      "width": 450,
+      "side": "right"
+    },
+    "defaultMaterials": {
+      "front": "SC-201",
+      "carcass": "WG-101",
+      "loft": "SC-201",
+      "secondary": "WG-101",
+      "drawer": "SC-201"
+    },
+    "defaultHandle": {
+      "style": "profile",
+      "finish": "black"
+    },
+    "baseFactor": 1
+  },
+  {
+    "id": "minimal-slab",
+    "name": "Minimal Slab",
+    "category": "Minimalist",
+    "description": "Flush matte shutters with integrated profile handles and no visible hardware.",
+    "doorType": "hinged",
+    "defaults": {
+      "width": 1500,
+      "height": 2400,
+      "depth": 600,
+      "loftHeight": 0,
+      "shutterCount": 3
+    },
+    "limits": {
+      "width": [
+        900,
+        3000
+      ],
+      "height": [
+        1800,
+        2700
+      ],
+      "depth": [
+        450,
+        750
+      ],
+      "loftHeight": [
+        0,
+        900
+      ],
+      "shutterCount": [
+        2,
+        6
+      ]
+    },
+    "loft": "optional",
+    "drawers": null,
+    "decor": {
+      "cornice": false,
+      "plinth": false
+    },
+    "defaultShutterStyle": "plain",
+    "defaultMaterials": {
+      "front": "SC-205",
+      "carcass": "SC-205",
+      "loft": "SC-205",
+      "secondary": "WG-101",
+      "drawer": "SC-205"
+    },
+    "defaultHandle": {
+      "style": "profile",
+      "finish": "gold"
+    },
+    "baseFactor": 1
   }
 ]

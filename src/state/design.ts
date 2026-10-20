@@ -29,10 +29,20 @@ const DEFAULT_MATERIALS: Record<Surface, string> = {
 };
 
 export function defaultAccessories(model: WardrobeModel): string[] {
-  const list = ["soft-close"];
+  const list = ["soft-close", ...(model.defaultAccessories ?? [])];
   if (model.decor.cornice) list.push("cornice");
-  if (model.decor.plinth) list.push("plinth");
-  return model.doorType === "sliding" ? list.filter((a) => a !== "soft-close") : list;
+  if (model.decor.plinth && !model.decor.legs) list.push("plinth");
+  return [...new Set(model.doorType === "sliding" ? list.filter((a) => a !== "soft-close") : list)];
+}
+
+function defaultDoors(model: WardrobeModel, count: number): DoorOverride[] {
+  return resizeDoors(model.defaultDoors ?? [], count).map((o) => {
+    const door: DoorOverride = {};
+    if (hasShutterStyle(o.style)) door.style = o.style;
+    if (hasLaminate(o.laminate)) door.laminate = o.laminate;
+    if (hasLaminate(o.secondary)) door.secondary = o.secondary;
+    return door;
+  });
 }
 
 export function createDesign(modelId = "three-door", name = "My Wardrobe"): Design {
@@ -48,26 +58,31 @@ export function createDesign(modelId = "three-door", name = "My Wardrobe"): Desi
     },
     shutterCount: model.defaults.shutterCount,
     shutterStyle: model.defaultShutterStyle,
-    materials: { ...DEFAULT_MATERIALS },
-    doors: Array.from({ length: model.defaults.shutterCount }, () => ({})),
-    handle: { style: model.doorType === "sliding" ? "profile" : "bar-long", finish: "black" },
+    materials: { ...DEFAULT_MATERIALS, ...model.defaultMaterials },
+    doors: defaultDoors(model, model.defaults.shutterCount),
+    handle: model.defaultHandle
+      ? { ...model.defaultHandle }
+      : { style: model.doorType === "sliding" ? "profile" : "bar-long", finish: "black" },
     accessories: defaultAccessories(model),
   };
 }
 
-/** Switch model, keeping materials/handles but adopting the model's dimensions. */
+/**
+ * Switch model. Curated models (with their own default materials) bring their
+ * signature look; plain templates keep the user's current materials and handle.
+ */
 export function switchModel(design: Design, modelId: string): Design {
   const model = getModel(modelId);
   const fresh = createDesign(model.id, design.name);
+  const curated = Boolean(model.defaultMaterials);
+  // Drop decor and the previous model's built-in extras; keep what the user added.
+  const decorIds = new Set(["cornice", "plinth", ...(getModel(design.modelId).defaultAccessories ?? [])]);
   return {
     ...fresh,
-    materials: { ...design.materials },
-    handle: { ...design.handle },
+    materials: curated ? fresh.materials : { ...design.materials },
+    handle: curated && model.defaultHandle ? fresh.handle : { ...design.handle },
     accessories: [
-      ...new Set([
-        ...design.accessories.filter((a) => a !== "cornice" && a !== "plinth"),
-        ...defaultAccessories(model).filter((a) => a !== "soft-close"),
-      ]),
+      ...new Set([...design.accessories.filter((a) => !decorIds.has(a)), ...fresh.accessories]),
     ].filter((a) => !(model.doorType === "sliding" && a === "soft-close")),
   };
 }

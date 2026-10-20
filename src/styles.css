@@ -137,6 +137,8 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
 .segmented button.active { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 
 .model-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.model-group + .model-group { margin-top: 14px; }
+.group-title { margin: 0 0 8px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .model-card {
   display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 8px;
   border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); text-align: center;

@@ -5,15 +5,25 @@ export type Range = [number, number];
 export interface WardrobeModel {
   id: string;
   name: string;
+  category: string;
   description: string;
   doorType: "hinged" | "sliding";
   defaults: { width: number; height: number; depth: number; loftHeight: number; shutterCount: number };
   limits: { width: Range; height: Range; depth: Range; loftHeight: Range; shutterCount: Range };
   /** "none" = no loft, "optional" = user may add one, "standard" = always has a loft. */
   loft: "none" | "optional" | "standard";
-  drawers: { rows: number; rowHeight: number } | null;
-  decor: { cornice: boolean; plinth: boolean };
+  /** External drawers. `columns` limits them to some shutter columns (default: all). */
+  drawers: { rows: number; rowHeight: number; columns?: number[]; style?: string } | null;
+  /** legs: raised on tapered legs; frame: thick solid-wood surround with a top cap. */
+  decor: { cornice: boolean; plinth: boolean; legs?: boolean; frame?: boolean };
+  /** Open shelving section beside the shutters. */
+  openShelf?: { width: number; side: "left" | "right" } | null;
   defaultShutterStyle: string;
+  /** Optional curated look applied when the model is chosen. */
+  defaultDoors?: DoorOverride[];
+  defaultMaterials?: Partial<Record<Surface, string>>;
+  defaultHandle?: { style: string; finish: string };
+  defaultAccessories?: string[];
   baseFactor: number;
 }
 

@@ -9,6 +9,7 @@ import {
   laminateCategories,
   laminateFinishes,
   laminates,
+  modelCategories,
   models,
   shutterStyles,
 } from "../data/catalog";
@@ -124,31 +125,52 @@ export function LeftPanel({ design, selected, onApply, onClearSelection }: Props
 }
 
 function ModelTab({ design, onApply }: { design: Design; onApply: Props["onApply"] }) {
-  // Show each template with the user's current materials.
+  const [category, setCategory] = useState("All");
+  // Plain templates are previewed with the user's current materials; curated ones show their own look.
   const previews = useMemo(
     () => models.map((m) => ({ m, d: switchModel(design, m.id) })),
     [design.materials, design.handle, design.accessories],
   );
+  const current = getModel(design.modelId);
+  const groups = (category === "All" ? modelCategories : [category]).map((c) => ({
+    category: c,
+    items: previews.filter(({ m }) => m.category === c),
+  }));
   return (
     <section>
-      <h3 className="section-title">Wardrobe model</h3>
-      <div className="model-grid">
-        {previews.map(({ m, d }) => (
-          <button
-            key={m.id}
-            className={m.id === design.modelId ? "model-card active" : "model-card"}
-            onClick={() => m.id !== design.modelId && onApply(switchModel(design, m.id), `Model: ${m.name}`)}
-            aria-pressed={m.id === design.modelId}
-            title={m.description}
-          >
-            <WardrobeSVG design={d} bare className="model-thumb" />
-            <strong>{m.name}</strong>
-            <small>
-              {m.defaults.width} × {m.defaults.height + m.defaults.loftHeight} mm
-            </small>
+      <h3 className="section-title">Wardrobe type</h3>
+      <div className="chips">
+        {["All", ...modelCategories].map((c) => (
+          <button key={c} className={category === c ? "chip active" : "chip"} onClick={() => setCategory(c)}>
+            {c}
           </button>
         ))}
       </div>
+      <p className="scope">
+        <strong>{current.name}</strong> · {current.description}
+      </p>
+      {groups.map((g) => (
+        <div key={g.category} className="model-group">
+          {category === "All" && <h4 className="group-title">{g.category}</h4>}
+          <div className="model-grid">
+            {g.items.map(({ m, d }) => (
+              <button
+                key={m.id}
+                className={m.id === design.modelId ? "model-card active" : "model-card"}
+                onClick={() => m.id !== design.modelId && onApply(switchModel(design, m.id), `Model: ${m.name}`)}
+                aria-pressed={m.id === design.modelId}
+                title={m.description}
+              >
+                <WardrobeSVG design={d} bare className="model-thumb" />
+                <strong>{m.name}</strong>
+                <small>
+                  {m.defaults.width} × {m.defaults.height + m.defaults.loftHeight} mm
+                </small>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }

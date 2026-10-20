@@ -36,6 +36,55 @@ export function ShutterThumb({ style, color = "#c9a47c", accent = "#f1efea" }: {
           <path d="M12 6 31 30V18L20 6Z" fill="rgba(255,255,255,.18)" />
         </svg>
       );
+    case "cane":
+      detail = (
+        <>
+          <rect x={10} y={8} width={20} height={44} fill="#d4b47c" stroke={frame} strokeWidth={1} />
+          <path d="M10 8l20 44M30 8 10 52M10 18h20M10 28h20M10 38h20M15 8v44M20 8v44M25 8v44" stroke="rgba(90,60,30,.35)" strokeWidth={0.6} />
+          <rect x={19} y={8} width={2.5} height={44} fill={color} />
+          <rect x={10} y={15} width={20} height={2.5} fill={color} />
+          <rect x={10} y={44} width={20} height={2.5} fill={color} />
+        </>
+      );
+      break;
+    case "mirror-arch":
+      detail = (
+        <>
+          <path d="M10 52V18a10 8 0 0 1 20 0v34Z" fill="#cfd6d9" stroke={frame} strokeWidth={1} />
+          <path d="M14 14h6L10 32v-8Z" fill="rgba(255,255,255,.6)" />
+        </>
+      );
+      break;
+    case "louvered":
+      detail = (
+        <>
+          <rect x={10} y={8} width={20} height={44} fill="rgba(0,0,0,.25)" />
+          {Array.from({ length: 11 }, (_, i) => (
+            <rect key={i} x={10} y={8 + i * 4} width={20} height={3.4} fill={color} stroke="rgba(0,0,0,.2)" strokeWidth={0.4} />
+          ))}
+        </>
+      );
+      break;
+    case "raised-panel":
+      detail = (
+        <>
+          <rect x={11} y={9} width={18} height={23} fill="rgba(0,0,0,.05)" stroke={frame} strokeWidth={1.2} />
+          <rect x={14} y={12} width={12} height={17} fill="none" stroke={light} strokeWidth={1} />
+          <rect x={11} y={36} width={18} height={15} fill="rgba(0,0,0,.05)" stroke={frame} strokeWidth={1.2} />
+          <rect x={14} y={39} width={12} height={9} fill="none" stroke={light} strokeWidth={1} />
+        </>
+      );
+      break;
+    case "reeded-glass":
+      return (
+        <svg viewBox="0 0 40 60" className="thumb-svg" aria-hidden="true">
+          <rect x={6} y={3} width={28} height={54} rx={1} fill="#9da2a7" />
+          <rect x={9} y={6} width={22} height={48} fill="#8a7864" />
+          {Array.from({ length: 9 }, (_, i) => (
+            <rect key={i} x={9 + i * 2.45} y={6} width={1.2} height={48} fill="rgba(255,255,255,.3)" />
+          ))}
+        </svg>
+      );
     case "mirror":
       detail = (
         <>

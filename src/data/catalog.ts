@@ -50,6 +50,7 @@ export const hasHandleStyle = (id: unknown): id is string => typeof id === "stri
 export const hasHandleFinish = (id: unknown): id is string => typeof id === "string" && handleFinishMap.has(id);
 export const hasAccessory = (id: unknown): id is string => typeof id === "string" && accessoryMap.has(id);
 
+export const modelCategories = [...new Set(models.map((m) => m.category))];
 export const laminateCategories = [...new Set(laminates.map((l) => l.category))];
 export const laminateFinishes = [...new Set(laminates.map((l) => l.finish))];
 

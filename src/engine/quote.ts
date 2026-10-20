@@ -17,6 +17,14 @@ import { resolveDoor } from "../state/design";
 import type { Design, PricingSettings } from "../state/types";
 import { computeLayout, sqft } from "./layout";
 
+const LAMINATE_SHARE: Record<string, number> = {
+  glass: 0,
+  "reeded-glass": 0,
+  mirror: 0.15,
+  "mirror-arch": 0.25,
+  cane: 0.45,
+};
+
 export interface QuoteLine {
   label: string;
   detail: string;
@@ -87,11 +95,10 @@ export function computeQuote(design: Design, pricing: PricingSettings): Quote {
     if (r.style === "two-tone") {
       add(r.laminate, a * 0.6);
       add(r.secondary, a * 0.4);
-    } else if (r.style === "glass") {
-      // aluminium profile + glass; no laminate on the face
-    } else if (r.style === "mirror") {
-      add(r.laminate, a * 0.15);
-    } else add(r.laminate, a);
+    } else {
+      // Share of the shutter face that is laminate (glass, mirror and cane infill are priced in the style rate).
+      add(r.laminate, a * (LAMINATE_SHARE[r.style] ?? 1));
+    }
     shutterStyleCost += a * price(pricing.shutters, r.style, getShutterStyle(r.style).ratePerSqft);
     styleCounts.set(r.style, (styleCounts.get(r.style) ?? 0) + 1);
   });
