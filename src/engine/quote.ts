@@ -13,7 +13,7 @@ import {
   shutterStyles,
   handleStyles,
 } from "../data/catalog";
-import { resolveDoor } from "../state/design";
+import { panelKey, resolveDoor, resolvePanel } from "../state/design";
 import type { Design, PricingSettings } from "../state/types";
 import { computeLayout, sqft } from "./layout";
 
@@ -102,8 +102,15 @@ export function computeQuote(design: Design, pricing: PricingSettings): Quote {
     shutterStyleCost += a * price(pricing.shutters, r.style, getShutterStyle(r.style).ratePerSqft);
     styleCounts.set(r.style, (styleCounts.get(r.style) ?? 0) + 1);
   });
-  L.loft?.doors.forEach((d) => add(design.materials.loft, sqft(d.rect)));
-  L.drawers.forEach((r) => add(design.materials.drawer, sqft(r)));
+  const addPanel = (key: string, a: number) => {
+    const r = resolvePanel(design, key);
+    if (r.style === "two-tone") {
+      add(r.laminate, a * 0.6);
+      add(r.secondary, a * 0.4);
+    } else add(r.laminate, a * (LAMINATE_SHARE[r.style] ?? 1));
+  };
+  L.loft?.doors.forEach((d) => addPanel(panelKey("loft", d.index), sqft(d.rect)));
+  L.drawers.forEach((r, i) => addPanel(panelKey("drawer", i), sqft(r)));
   // Two exposed side panels (full height × depth).
   add(design.materials.carcass, sqft({ w: L.depth, h: L.height }) * 2);
 

@@ -8,7 +8,7 @@ import { Modal, PricingModal, SavedDesignsModal, ShareModal } from "./components
 import { Preview } from "./components/Preview";
 import { PrintSummary } from "./components/PrintSummary";
 import { RightPanel } from "./components/RightPanel";
-import { createDesign } from "./state/design";
+import { allPanelKeys, createDesign } from "./state/design";
 import {
   loadCurrentDesign,
   loadPrefs,
@@ -40,7 +40,7 @@ export default function App() {
   const history = useHistory(() => loadCurrentDesign() ?? createDesign());
   const { design, apply } = history;
   const [before, setBefore] = useState<Design>(design);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs);
   const [pricing, setPricing] = useState<PricingSettings>(loadPricing);
   const [saved, setSaved] = useState<SavedDesign[]>(initialSaved.designs);
@@ -70,13 +70,14 @@ export default function App() {
   useEffect(() => void persistPrefs(prefs), [prefs]);
   useEffect(() => void persistPricing(pricing), [pricing]);
 
-  // Drop selections that no longer exist (shutter count changed / undo).
-  const validSelected = useMemo(() => selected.filter((i) => i < design.shutterCount), [selected, design.shutterCount]);
+  // Every selectable panel in the current layout; drops selections that no longer exist.
+  const panelKeys = useMemo(() => allPanelKeys(design), [design]);
+  const validSelected = useMemo(() => selected.filter((k) => panelKeys.includes(k)), [selected, panelKeys]);
 
-  const onDoorClick = useCallback((i: number, additive: boolean) => {
+  const onPanelClick = useCallback((key: string, additive: boolean) => {
     setSelected((s) => {
-      if (additive) return s.includes(i) ? s.filter((x) => x !== i) : [...s, i].sort((a, b) => a - b);
-      return s.length === 1 && s[0] === i ? [] : [i];
+      if (additive) return s.includes(key) ? s.filter((x) => x !== key) : [...s, key];
+      return s.length === 1 && s[0] === key ? [] : [key];
     });
   }, []);
 
@@ -288,7 +289,10 @@ export default function App() {
             design={design}
             before={before}
             selected={validSelected}
-            onDoorClick={onDoorClick}
+            panelKeys={panelKeys}
+            onPanelClick={onPanelClick}
+            onSelect={setSelected}
+            onApply={apply}
             onBackgroundClick={() => setSelected([])}
             angle={prefs.angle}
             onAngle={(angle) => setPrefs((p) => ({ ...p, angle }))}
@@ -307,8 +311,9 @@ export default function App() {
             quote={quote}
             currency={currency}
             onApply={apply}
-            onSelect={onDoorClick}
-            onSelectAll={() => setSelected(design.doors.map((_, i) => i))}
+            panelKeys={panelKeys}
+            onSelect={onPanelClick}
+            onSelectAll={() => setSelected(panelKeys)}
             onClearSelection={() => setSelected([])}
             onOpenPricing={() => setModal("pricing")}
           />

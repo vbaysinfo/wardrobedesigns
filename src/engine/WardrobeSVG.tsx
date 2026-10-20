@@ -3,9 +3,9 @@
 // handles → decor → lighting. Every laminate is an SVG <pattern> filled with a
 // cached texture, so changing a material only swaps a fill – the geometry and
 // panel positions stay fixed.
-import { forwardRef, memo, useId, type ReactNode } from "react";
+import { forwardRef, memo, useId, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import { getHandleFinish, getLaminate, getModel } from "../data/catalog";
-import { resolveDoor } from "../state/design";
+import { panelBadge, panelKey, parsePanelKey, resolvePanel } from "../state/design";
 import type { Design } from "../state/types";
 import { computeLayout, type DoorGeom, type HandleSide, type Rect } from "./layout";
 import { finishSheen, getTexture, useTextureVersion } from "./textures";
@@ -15,8 +15,9 @@ export interface WardrobeSVGProps {
   /** Rotation in degrees (-35…35). 0 = straight front elevation. */
   angle?: number;
   showDims?: boolean;
-  selected?: number[];
-  onDoorClick?: (index: number, additive: boolean) => void;
+  /** Selected panel keys ("door:0", "loft:1", "drawer:2"). */
+  selected?: string[];
+  onPanelClick?: (key: string, additive: boolean) => void;
   className?: string;
   /** Hide wall/floor context (thumbnails). */
   bare?: boolean;
@@ -26,7 +27,7 @@ const FONT = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 
 export const WardrobeSVG = memo(
   forwardRef<SVGSVGElement, WardrobeSVGProps>(function WardrobeSVG(
-    { design, angle = 0, showDims = false, selected = [], onDoorClick, className, bare = false },
+    { design, angle = 0, showDims = false, selected = [], onPanelClick, className, bare = false },
     ref,
   ) {
     useTextureVersion();
@@ -41,14 +42,19 @@ export const WardrobeSVG = memo(
 
     // ---- materials ---------------------------------------------------------
     const used = new Set<string>(Object.values(design.materials));
-    design.doors.forEach((_, i) => {
-      const r = resolveDoor(design, i);
+    const allKeys = [
+      ...L.doors.map((d) => panelKey("door", d.index)),
+      ...(L.loft?.doors ?? []).map((d) => panelKey("loft", d.index)),
+      ...L.drawers.map((_, i) => panelKey("drawer", i)),
+    ];
+    const resolved = new Map(allKeys.map((k) => [k as string, resolvePanel(design, k)]));
+    resolved.forEach((r) => {
       used.add(r.laminate);
       used.add(r.secondary);
     });
     // Cane infill always uses the cane texture, whatever the shutter laminate.
     const CANE = "TX-403";
-    if (design.shutterStyle === "cane" || design.doors.some((o) => o.style === "cane")) used.add(CANE);
+    if ([...resolved.values()].some((r) => r.style === "cane")) used.add(CANE);
     const fill = (code: string) => `url(#${p}-lam-${code})`;
     const sheen = (code: string) => finishSheen(getLaminate(code).finish);
 
@@ -63,7 +69,7 @@ export const WardrobeSVG = memo(
 
     const fs = Math.max(W, H) * 0.024;
     const padX = Math.max(W, H) * 0.12 + (showDims ? fs * 3 : 0);
-    const padTop = Math.max(W, H) * 0.08;
+    const padTop = Math.max(W, H) * 0.08 + (showDims ? fs * 1.5 : 0);
     const padBottom = Math.max(W, H) * 0.07 + (showDims ? fs * 3.2 : 0);
     const vb = { x: -padX, y: -padTop, w: totalW + padX * 2, h: H + padTop + padBottom };
 
@@ -378,35 +384,39 @@ export const WardrobeSVG = memo(
 
     // ---- assemble --------------------------------------------------------------
     const doors = [...L.doors].sort((da, db) => da.layer - db.layer);
-    const selectedSet = new Set(selected);
+
+    const clickable = (key: string) =>
+      onPanelClick
+        ? {
+            className: "ws-door",
+            onClick: (e: ReactMouseEvent) => {
+              e.stopPropagation();
+              onPanelClick(key, e.shiftKey || e.metaKey || e.ctrlKey);
+            },
+          }
+        : {};
+    const hit = (r: Rect) => <rect className="ws-door-hit" x={r.x} y={r.y} width={r.w} height={r.h} fill="transparent" />;
 
     const doorNode = (d: DoorGeom) => {
-      const r = resolveDoor(design, d.index);
+      const key = panelKey("door", d.index);
+      const r = resolved.get(key)!;
       return (
-        <g
-          key={"door" + d.index}
-          className={onDoorClick ? "ws-door" : undefined}
-          data-door={d.index}
-          filter={L.sliding && d.layer === 1 ? `url(#${p}-slideShadow)` : undefined}
-          onClick={onDoorClick ? (e) => onDoorClick(d.index, e.shiftKey || e.metaKey || e.ctrlKey) : undefined}
-        >
+        <g key={key} data-panel={key} filter={L.sliding && d.layer === 1 ? `url(#${p}-slideShadow)` : undefined} {...clickable(key)}>
           {shutter(d.rect, r.style, r.laminate, r.secondary, "s" + d.index)}
           {L.sliding && d.layer === 0 && <rect x={d.rect.x} y={d.rect.y} width={d.rect.w} height={d.rect.h} fill="rgba(0,0,0,.08)" />}
           {!r.style.includes("glass") || handleStyle !== "profile" ? handle(d.rect, d.handleSide, "door", "h" + d.index) : null}
-          <rect className="ws-door-hit" x={d.rect.x} y={d.rect.y} width={d.rect.w} height={d.rect.h} fill="transparent" />
+          {hit(d.rect)}
         </g>
       );
     };
 
-    const loftStyle = (() => {
-      const s = design.shutterStyle;
-      if (s === "arch" || s === "raised-panel") return "shaker";
-      if (s === "mirror" || s === "mirror-arch" || s === "two-tone") return "plain";
-      return s;
-    })();
+    // Every selectable panel rectangle, for selection outlines.
+    const panelRects = new Map<string, Rect>([
+      ...L.doors.map((d) => [panelKey("door", d.index), d.rect] as [string, Rect]),
+      ...(L.loft?.doors ?? []).map((d) => [panelKey("loft", d.index), d.rect] as [string, Rect]),
+      ...L.drawers.map((r, i) => [panelKey("drawer", i), r] as [string, Rect]),
+    ]);
 
-    const drawerStyle =
-      model.drawers?.style ?? (["fluted", "framed", "shaker"].includes(design.shutterStyle) ? design.shutterStyle : "plain");
     const Hb = L.body.y + L.body.h; // underside of the carcass (above legs)
 
     // Open shelving with a few styling props.
@@ -468,19 +478,29 @@ export const WardrobeSVG = memo(
           <rect key={"t" + i} x={t.x} y={t.y} width={t.w} height={t.h} fill={`url(#${p}-alu)`} />
         ))}
         {doors.map(doorNode)}
-        {L.drawers.map((r, i) => (
-          <g key={"dr" + i}>
-            {shutter(r, drawerStyle, design.materials.drawer, design.materials.secondary, "d" + i)}
-            {handle(r, "center", "drawer", "dh" + i)}
-          </g>
-        ))}
-        {L.loft &&
-          L.loft.doors.map((d) => (
-            <g key={"lf" + d.index}>
-              {shutter(d.rect, loftStyle, design.materials.loft, design.materials.secondary, "l" + d.index)}
-              {handle(d.rect, d.handleSide, "loft", "lh" + d.index)}
+        {L.drawers.map((r, i) => {
+          const key = panelKey("drawer", i);
+          const rs = resolved.get(key)!;
+          return (
+            <g key={key} data-panel={key} {...clickable(key)}>
+              {shutter(r, rs.style, rs.laminate, rs.secondary, "d" + i)}
+              {handle(r, "center", "drawer", "dh" + i)}
+              {hit(r)}
             </g>
-          ))}
+          );
+        })}
+        {L.loft &&
+          L.loft.doors.map((d) => {
+            const key = panelKey("loft", d.index);
+            const rs = resolved.get(key)!;
+            return (
+              <g key={key} data-panel={key} {...clickable(key)}>
+                {shutter(d.rect, rs.style, rs.laminate, rs.secondary, "l" + d.index)}
+                {!rs.style.includes("glass") || handleStyle !== "profile" ? handle(d.rect, d.handleSide, "loft", "lh" + d.index) : null}
+                {hit(d.rect)}
+              </g>
+            );
+          })}
         {L.plinth && (
           <>
             <rect x={0} y={L.plinth.y} width={W} height={L.plinth.h} fill={fill(design.materials.carcass)} />
@@ -519,17 +539,21 @@ export const WardrobeSVG = memo(
         <rect x={0} y={L.cap ? L.cap.h : 0} width={W} height={Hb - (L.cap ? L.cap.h : 0)} fill="none" stroke="rgba(0,0,0,.35)" strokeWidth={2} />
         {/* selection (UI only, removed from exports) */}
         <g className="ui-only" pointerEvents="none">
-          {L.doors
-            .filter((d) => selectedSet.has(d.index))
-            .map((d) => (
-              <g key={"sel" + d.index}>
-                <rect x={d.rect.x + 4} y={d.rect.y + 4} width={d.rect.w - 8} height={d.rect.h - 8} fill="rgba(171,132,56,.12)" stroke="#ab8438" strokeWidth={8} strokeDasharray="28 14" />
-                <circle cx={d.rect.x + d.rect.w / 2} cy={d.rect.y + 90} r={48} fill="#ab8438" />
-                <text x={d.rect.x + d.rect.w / 2} y={d.rect.y + 90} dy="0.35em" textAnchor="middle" fontFamily={FONT} fontSize={52} fontWeight={700} fill="#fff">
-                  {d.index + 1}
+          {selected.map((key) => {
+            const r = panelRects.get(key);
+            if (!r) return null;
+            const rad = Math.min(48, r.w * 0.2, r.h * 0.3);
+            const cy = r.y + Math.min(90, r.h / 2);
+            return (
+              <g key={"sel" + key}>
+                <rect x={r.x + 4} y={r.y + 4} width={r.w - 8} height={r.h - 8} fill="rgba(171,132,56,.14)" stroke="#ab8438" strokeWidth={8} strokeDasharray="28 14" />
+                <circle cx={r.x + r.w / 2} cy={cy} r={rad} fill="#ab8438" />
+                <text x={r.x + r.w / 2} y={cy} dy="0.35em" textAnchor="middle" fontFamily={FONT} fontSize={rad * (parsePanelKey(key)?.part === "door" ? 1.08 : 0.8)} fontWeight={700} fill="#fff">
+                  {panelBadge(key)}
                 </text>
               </g>
-            ))}
+            );
+          })}
         </g>
       </g>
     );
@@ -578,8 +602,22 @@ export const WardrobeSVG = memo(
           </text>
         </g>
       );
+      // Chain dimension of shutter widths above the unit (CAD-style).
+      const yC = -fs * 1.5;
+      const chain = L.sliding ? [] : L.doors.map((d) => d.rect);
+      const sx = (x: number) => frontX + x * cx;
       dims = (
         <g className="dims">
+          {chain.map((r, i) => (
+            <g key={"c" + i}>
+              <line x1={sx(r.x)} y1={yC} x2={sx(r.x + r.w)} y2={yC} stroke={col} strokeWidth={fs * 0.05} />
+              <line x1={sx(r.x)} y1={yC - tick * 0.7} x2={sx(r.x)} y2={yC + tick * 0.7} stroke={col} strokeWidth={fs * 0.05} />
+              <line x1={sx(r.x + r.w)} y1={yC - tick * 0.7} x2={sx(r.x + r.w)} y2={yC + tick * 0.7} stroke={col} strokeWidth={fs * 0.05} />
+              <text x={sx(r.x + r.w / 2)} y={yC - fs * 0.35} fontFamily={FONT} fontSize={fs * 0.7} fill={col} textAnchor="middle">
+                {Math.round(r.w)}
+              </text>
+            </g>
+          ))}
           <line x1={x0} y1={yW} x2={x1} y2={yW} stroke={col} strokeWidth={fs * 0.06} />
           <line x1={x0} y1={yW - tick} x2={x0} y2={yW + tick} stroke={col} strokeWidth={fs * 0.06} />
           <line x1={x1} y1={yW - tick} x2={x1} y2={yW + tick} stroke={col} strokeWidth={fs * 0.06} />

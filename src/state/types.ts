@@ -93,6 +93,10 @@ export interface ColorCombo {
 /** Surfaces that can carry their own laminate. */
 export type Surface = "front" | "secondary" | "carcass" | "loft" | "drawer";
 
+/** A selectable panel: "door:0", "loft:2", "drawer:1". */
+export type Part = "door" | "loft" | "drawer";
+export type PanelKey = `${Part}:${number}`;
+
 /** Per-shutter overrides; missing keys fall back to the design-wide value. */
 export interface DoorOverride {
   style?: string;
@@ -115,6 +119,9 @@ export interface Design {
   shutterStyle: string;
   materials: Record<Surface, string>;
   doors: DoorOverride[];
+  /** Per-panel overrides for loft shutters and external drawer fronts (by layout index). */
+  loftDoors: DoorOverride[];
+  drawerFronts: DoorOverride[];
   handle: { style: string; finish: string };
   accessories: string[];
 }

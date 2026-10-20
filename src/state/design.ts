@@ -10,7 +10,8 @@ import {
   hasModel,
   hasShutterStyle,
 } from "../data/catalog";
-import type { Design, DoorOverride, Surface, WardrobeModel } from "./types";
+import { computeLayout } from "../engine/layout";
+import type { Design, DoorOverride, PanelKey, Part, Surface, WardrobeModel } from "./types";
 
 export const SURFACES: { key: Surface; label: string; hint: string }[] = [
   { key: "front", label: "Shutters", hint: "Main shutter laminate" },
@@ -60,6 +61,8 @@ export function createDesign(modelId = "three-door", name = "My Wardrobe"): Desi
     shutterStyle: model.defaultShutterStyle,
     materials: { ...DEFAULT_MATERIALS, ...model.defaultMaterials },
     doors: defaultDoors(model, model.defaults.shutterCount),
+    loftDoors: [],
+    drawerFronts: [],
     handle: model.defaultHandle
       ? { ...model.defaultHandle }
       : { style: model.doorType === "sliding" ? "profile" : "bar-long", finish: "black" },
@@ -108,6 +111,66 @@ export function resolveDoor(design: Design, i: number): ResolvedDoor {
   };
 }
 
+/** Default loft shutter style derived from the main style (some styles don't suit short panels). */
+export function loftStyleFor(style: string): string {
+  if (style === "arch" || style === "raised-panel") return "shaker";
+  if (style === "mirror" || style === "mirror-arch" || style === "two-tone") return "plain";
+  return style;
+}
+
+export function drawerStyleFor(design: Design, model = getModel(design.modelId)): string {
+  return model.drawers?.style ?? (["fluted", "framed", "shaker"].includes(design.shutterStyle) ? design.shutterStyle : "plain");
+}
+
+export const PART_LABEL: Record<Part, string> = { door: "Shutter", loft: "Loft shutter", drawer: "Drawer" };
+
+export const panelKey = (part: Part, index: number) => `${part}:${index}` as PanelKey;
+
+export function parsePanelKey(key: string): { part: Part; index: number } | null {
+  const m = /^(door|loft|drawer):(\d+)$/.exec(key);
+  return m ? { part: m[1] as Part, index: Number(m[2]) } : null;
+}
+
+export function panelName(key: string): string {
+  const k = parsePanelKey(key);
+  return k ? `${PART_LABEL[k.part]} ${k.index + 1}` : key;
+}
+
+/** Short badge text drawn on the preview: 1, L1, D1. */
+export function panelBadge(key: string): string {
+  const k = parsePanelKey(key);
+  if (!k) return "";
+  return `${k.part === "door" ? "" : k.part === "loft" ? "L" : "D"}${k.index + 1}`;
+}
+
+export function overridesFor(design: Design, part: Part): DoorOverride[] {
+  return part === "door" ? design.doors : part === "loft" ? design.loftDoors : design.drawerFronts;
+}
+
+/** Resolve any panel's effective style and laminates. */
+export function resolvePanel(design: Design, key: string): ResolvedDoor {
+  const k = parsePanelKey(key);
+  if (!k || k.part === "door") return resolveDoor(design, k?.index ?? 0);
+  const o = overridesFor(design, k.part)[k.index] ?? {};
+  const loft = k.part === "loft";
+  return {
+    style: o.style ?? (loft ? loftStyleFor(design.shutterStyle) : drawerStyleFor(design)),
+    laminate: o.laminate ?? (loft ? design.materials.loft : design.materials.drawer),
+    secondary: o.secondary ?? design.materials.secondary,
+    overridden: Boolean(o.style || o.laminate || o.secondary),
+  };
+}
+
+/** Keys of every selectable panel in the design's current layout. */
+export function allPanelKeys(design: Design): string[] {
+  const L = computeLayout(design);
+  return [
+    ...L.doors.map((d) => panelKey("door", d.index)),
+    ...(L.loft?.doors ?? []).map((d) => panelKey("loft", d.index)),
+    ...L.drawers.map((_, i) => panelKey("drawer", i)),
+  ];
+}
+
 export function hasLoft(design: Design, model = getModel(design.modelId)): boolean {
   return model.loft !== "none" && design.dims.loftHeight > 0;
 }
@@ -154,15 +217,20 @@ export function sanitizeDesign(raw: unknown): { design: Design; issues: string[]
     else if (mats[key] !== undefined) issues.push(`Unknown laminate "${String(mats[key])}" on ${key} – replaced.`);
   }
 
-  const rawDoors = Array.isArray(raw.doors) ? raw.doors : [];
-  const doors = resizeDoors([], shutterCount).map((_, i) => {
-    const o = isObj(rawDoors[i]) ? rawDoors[i] : {};
-    const door: DoorOverride = {};
-    if (hasShutterStyle(o.style)) door.style = o.style;
-    if (hasLaminate(o.laminate)) door.laminate = o.laminate;
-    if (hasLaminate(o.secondary)) door.secondary = o.secondary;
-    return door;
-  });
+  const overrides = (v: unknown, count: number): DoorOverride[] => {
+    const arr = Array.isArray(v) ? v : [];
+    return Array.from({ length: count }, (_, i) => {
+      const o = isObj(arr[i]) ? arr[i] : {};
+      const door: DoorOverride = {};
+      if (hasShutterStyle(o.style)) door.style = o.style;
+      if (hasLaminate(o.laminate)) door.laminate = o.laminate;
+      if (hasLaminate(o.secondary)) door.secondary = o.secondary;
+      return door;
+    });
+  };
+  const doors = overrides(raw.doors, shutterCount);
+  const loftDoors = overrides(raw.loftDoors, Math.min(Array.isArray(raw.loftDoors) ? raw.loftDoors.length : 0, 12));
+  const drawerFronts = overrides(raw.drawerFronts, Math.min(Array.isArray(raw.drawerFronts) ? raw.drawerFronts.length : 0, 24));
 
   const h = isObj(raw.handle) ? raw.handle : {};
   const handle = {
@@ -182,7 +250,7 @@ export function sanitizeDesign(raw: unknown): { design: Design; issues: string[]
     typeof raw.name === "string" && raw.name.trim() ? raw.name.trim().slice(0, 80) : base.name;
 
   return {
-    design: { name, modelId, dims, shutterCount, shutterStyle, materials, doors, handle, accessories },
+    design: { name, modelId, dims, shutterCount, shutterStyle, materials, doors, loftDoors, drawerFronts, handle, accessories },
     issues,
   };
 }

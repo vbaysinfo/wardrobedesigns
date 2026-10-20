@@ -33,7 +33,7 @@ export function PrintSummary({ design, quote, currency }: { design: Design; quot
           </table>
           {doors.length > 0 && (
             <>
-              <h2>Individually customised shutters</h2>
+              <h2>Individually customised panels</h2>
               <ul>
                 {doors.map((d) => (
                   <li key={d}>{d}</li>

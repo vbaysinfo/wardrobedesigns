@@ -16,7 +16,7 @@ import {
 import { WardrobeSVG } from "../engine/WardrobeSVG";
 import { getThumbnail } from "../engine/textures";
 import { applyCombo, applyLaminate, applyShutterStyle, toggleAccessory } from "../state/actions";
-import { hasLoft, resolveDoor, SURFACES, switchModel } from "../state/design";
+import { hasLoft, panelName, resolvePanel, SURFACES, switchModel } from "../state/design";
 import type { Design, Surface } from "../state/types";
 import { Icon, type IconName } from "./Icons";
 import { HandleThumb, ShutterThumb } from "./Thumbs";
@@ -34,21 +34,21 @@ const TABS: { id: Tab; label: string; icon: IconName }[] = [
 
 interface Props {
   design: Design;
-  selected: number[];
+  selected: string[];
   onApply: (d: Design, label: string) => void;
   onClearSelection: () => void;
 }
 
-function ScopeBanner({ selected, onClear, note }: { selected: number[]; onClear: () => void; note?: string }) {
+function ScopeBanner({ selected, onClear, note }: { selected: string[]; onClear: () => void; note?: string }) {
   if (!selected.length)
     return (
       <p className="scope">
-        Applying to <strong>all shutters</strong>. Click a shutter in the preview to customise it individually.
+        Applying to <strong>the whole design</strong>. Click any shutter, loft shutter or drawer in the preview to edit just that panel.
       </p>
     );
   return (
     <p className="scope scope-active">
-      Applying to <strong>shutter {selected.map((i) => i + 1).join(", ")}</strong>
+      Applying only to <strong>{selected.map(panelName).join(", ")}</strong>
       {note ? <> · {note}</> : null}
       <button className="link" onClick={onClear}>
         Apply to all
@@ -175,8 +175,8 @@ function ModelTab({ design, onApply }: { design: Design; onApply: Props["onApply
   );
 }
 
-function ShutterTab({ design, selected, onApply, onClear }: { design: Design; selected: number[]; onApply: Props["onApply"]; onClear: () => void }) {
-  const current = selected.length === 1 ? resolveDoor(design, selected[0]).style : selected.length ? null : design.shutterStyle;
+function ShutterTab({ design, selected, onApply, onClear }: { design: Design; selected: string[]; onApply: Props["onApply"]; onClear: () => void }) {
+  const current = selected.length === 1 ? resolvePanel(design, selected[0]).style : selected.length ? null : design.shutterStyle;
   const front = getLaminate(design.materials.front).color;
   const accent = getLaminate(design.materials.secondary).color;
   return (
@@ -201,7 +201,7 @@ function ShutterTab({ design, selected, onApply, onClear }: { design: Design; se
   );
 }
 
-function LaminateTab({ design, selected, onApply, onClear }: { design: Design; selected: number[]; onApply: Props["onApply"]; onClear: () => void }) {
+function LaminateTab({ design, selected, onApply, onClear }: { design: Design; selected: string[]; onApply: Props["onApply"]; onClear: () => void }) {
   const model = getModel(design.modelId);
   const [surface, setSurface] = useState<Surface>("front");
   const [query, setQuery] = useState("");
@@ -214,11 +214,11 @@ function LaminateTab({ design, selected, onApply, onClear }: { design: Design; s
     return true;
   });
   const activeSurface = surfaces.some((s) => s.key === surface) ? surface : "front";
-  const perDoor = selected.length > 0 && (activeSurface === "front" || activeSurface === "secondary");
+  const perDoor = selected.length > 0 && activeSurface !== "carcass";
 
   let current: string | null = design.materials[activeSurface];
   if (perDoor) {
-    const codes = new Set(selected.map((i) => (activeSurface === "front" ? resolveDoor(design, i).laminate : resolveDoor(design, i).secondary)));
+    const codes = new Set(selected.map((k) => (activeSurface === "secondary" ? resolvePanel(design, k).secondary : resolvePanel(design, k).laminate)));
     current = codes.size === 1 ? [...codes][0] : null;
   }
 
@@ -240,7 +240,7 @@ function LaminateTab({ design, selected, onApply, onClear }: { design: Design; s
           </button>
         ))}
       </div>
-      {activeSurface === "front" || activeSurface === "secondary" ? (
+      {activeSurface !== "carcass" ? (
         <ScopeBanner selected={selected} onClear={onClear} />
       ) : (
         <p className="scope">{surfaces.find((s) => s.key === activeSurface)?.hint}.</p>

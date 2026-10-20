@@ -1,6 +1,6 @@
 // Browser-side exports: PNG snapshot, JSON config, WhatsApp share text.
 import { getAccessory, getHandleFinish, getHandleStyle, getLaminate, getModel, getShutterStyle } from "../data/catalog";
-import { hasLoft, resolveDoor, sanitizeDesign } from "../state/design";
+import { allPanelKeys, hasLoft, panelName, resolvePanel, sanitizeDesign } from "../state/design";
 import type { Design, PricingSettings } from "../state/types";
 import { formatMoney, type Quote } from "./quote";
 
@@ -126,13 +126,14 @@ export function designSummaryLines(design: Design): [string, string][] {
   return rows;
 }
 
+/** One line per panel (shutter, loft shutter, drawer) that differs from the overall design. */
 export function customDoorLines(design: Design): string[] {
-  return design.doors.flatMap((o, i) => {
-    if (!o.style && !o.laminate && !o.secondary) return [];
-    const r = resolveDoor(design, i);
+  return allPanelKeys(design).flatMap((key) => {
+    const r = resolvePanel(design, key);
+    if (!r.overridden) return [];
     const parts = [getShutterStyle(r.style).name, getLaminate(r.laminate).name];
     if (r.style === "two-tone") parts.push(`accent ${getLaminate(r.secondary).name}`);
-    return [`Shutter ${i + 1}: ${parts.join(", ")}`];
+    return [`${panelName(key)}: ${parts.join(", ")}`];
   });
 }
 

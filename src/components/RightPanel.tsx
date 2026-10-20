@@ -4,18 +4,20 @@ import { designSummaryLines } from "../engine/export";
 import { formatMoney, type Quote } from "../engine/quote";
 import { getThumbnail } from "../engine/textures";
 import { getAdvisories, validateDimensionInput } from "../engine/validate";
-import { resetDoor, setDimension, setShutterCount } from "../state/actions";
-import { hasLoft, resolveDoor } from "../state/design";
+import { resetPanels, setDimension, setShutterCount } from "../state/actions";
+import { hasLoft, panelBadge, panelName, PART_LABEL, parsePanelKey, resolvePanel } from "../state/design";
+import type { Part } from "../state/types";
 import type { Design, Dimensions } from "../state/types";
 import { Icon } from "./Icons";
 
 interface Props {
   design: Design;
-  selected: number[];
+  selected: string[];
+  panelKeys: string[];
   quote: Quote;
   currency: string;
   onApply: (d: Design, label: string) => void;
-  onSelect: (index: number, additive: boolean) => void;
+  onSelect: (key: string, additive: boolean) => void;
   onSelectAll: () => void;
   onClearSelection: () => void;
   onOpenPricing: () => void;
@@ -121,40 +123,49 @@ export function RightPanel(props: Props) {
 
         <section className="card">
           <div className="card-head">
-            <h3 className="section-title">Shutters</h3>
+            <h3 className="section-title">Panels</h3>
             <span className="head-actions">
               <button className="link" onClick={props.onSelectAll}>Select all</button>
               {selected.length > 0 && <button className="link" onClick={props.onClearSelection}>Clear</button>}
             </span>
           </div>
-          <ul className="door-list">
-            {design.doors.map((_, i) => {
-              const r = resolveDoor(design, i);
-              const lam = getLaminate(r.laminate);
-              return (
-                <li key={i} className={selected.includes(i) ? "selected" : ""}>
-                  <button className="door-row" onClick={(e) => props.onSelect(i, e.shiftKey || e.metaKey || e.ctrlKey)} aria-pressed={selected.includes(i)}>
-                    <span className="door-num">{i + 1}</span>
-                    <span className="mini-swatch" style={{ backgroundImage: `url(${getThumbnail(lam)})` }} />
-                    <span className="door-text">
-                      <strong>{getShutterStyle(r.style).name}</strong>
-                      <small>
-                        {lam.name}
-                        {r.style === "two-tone" ? ` + ${getLaminate(r.secondary).name}` : ""}
-                      </small>
-                    </span>
-                    {r.overridden && <em className="badge">custom</em>}
-                  </button>
-                  {r.overridden && (
-                    <button className="icon-btn" title="Reset this shutter to the overall design" onClick={() => onApply(resetDoor(design, i), `Reset shutter ${i + 1}`)}>
-                      <Icon name="reset" size={15} />
-                    </button>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-          <p className="hint">Tip: click shutters in the preview (Shift/Ctrl-click for several), then pick a style or laminate.</p>
+          {(["door", "loft", "drawer"] as Part[]).map((part) => {
+            const keys = props.panelKeys.filter((k) => parsePanelKey(k)?.part === part);
+            if (!keys.length) return null;
+            return (
+              <div key={part} className="panel-group">
+                {part !== "door" || props.panelKeys.length !== keys.length ? <h4 className="group-title">{PART_LABEL[part]}s</h4> : null}
+                <ul className="door-list">
+                  {keys.map((key) => {
+                    const r = resolvePanel(design, key);
+                    const lam = getLaminate(r.laminate);
+                    return (
+                      <li key={key} className={selected.includes(key) ? "selected" : ""}>
+                        <button className="door-row" onClick={(e) => props.onSelect(key, e.shiftKey || e.metaKey || e.ctrlKey)} aria-pressed={selected.includes(key)} aria-label={panelName(key)}>
+                          <span className="door-num">{panelBadge(key)}</span>
+                          <span className="mini-swatch" style={{ backgroundImage: `url(${getThumbnail(lam)})` }} />
+                          <span className="door-text">
+                            <strong>{getShutterStyle(r.style).name}</strong>
+                            <small>
+                              {lam.name}
+                              {r.style === "two-tone" ? ` + ${getLaminate(r.secondary).name}` : ""}
+                            </small>
+                          </span>
+                          {r.overridden && <em className="badge">custom</em>}
+                        </button>
+                        {r.overridden && (
+                          <button className="icon-btn" title="Reset this panel to the overall design" onClick={() => onApply(resetPanels(design, [key]), `Reset ${panelName(key)}`)}>
+                            <Icon name="reset" size={15} />
+                          </button>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
+          <p className="hint">Tip: click panels in the preview (Shift/Ctrl-click for several) and edit them in the pop-up, or pick a style or laminate on the left.</p>
         </section>
 
         <section className="card">

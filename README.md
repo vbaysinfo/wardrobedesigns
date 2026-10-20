@@ -49,7 +49,10 @@ folder. There is no server code and no runtime Node.js requirement.
 - **Accessories** (some are visible in the preview: LED light, cornice, plinth) and **colour combinations**.
 - **Preview**: front and angled (left/right) views, a rotation slider, zoom, full screen,
   a dimensions overlay and a before/after comparison slider.
-- **Editing**: undo/redo (Ctrl+Z / Ctrl+Y), reset, and click (or Shift-click) shutters to customise them individually.
+- **Per-panel editing on the drawing**: click any wardrobe shutter, loft shutter or drawer front
+  (Shift/Ctrl-click to add more). A floating editor next to the selection changes only those panels'
+  laminate, accent and style. It also has quick “select all shutters / loft / drawers” and reset options.
+- **Editing**: undo/redo (Ctrl+Z / Ctrl+Y), reset, and CAD-style chain dimensions of the shutter widths.
 - **Dimensions**: input validation, template range warnings and design advisories.
 - **Save/load/duplicate/delete** in `localStorage`, with an autosave of the working design.
 - **Export**: PNG download, JSON export/import, print-friendly summary (use “Save as PDF”

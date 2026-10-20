@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { getModel } from "../data/catalog";
 import { WardrobeSVG } from "../engine/WardrobeSVG";
 import type { Design } from "../state/types";
+import { panelName } from "../state/design";
 import { Icon } from "./Icons";
+import { PanelEditBar } from "./PanelEditBar";
 
 interface Props {
   design: Design;
   before: Design;
-  selected: number[];
-  onDoorClick: (index: number, additive: boolean) => void;
+  selected: string[];
+  panelKeys: string[];
+  onPanelClick: (key: string, additive: boolean) => void;
+  onSelect: (keys: string[]) => void;
+  onApply: (d: Design, label: string) => void;
   onBackgroundClick: () => void;
   angle: number;
   onAngle: (a: number) => void;
@@ -28,6 +33,47 @@ export function Preview(p: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const model = getModel(p.design.modelId);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const [barPos, setBarPos] = useState<{ left: number; top: number } | "docked" | null>(null);
+
+  // Anchor the edit bar beside the selected panels (falls back to docking at the bottom).
+  const placeBar = useCallback(() => {
+    const wrap = wrapRef.current, svg = p.svgRef.current, bar = barRef.current;
+    if (!wrap || !svg || !p.selected.length) return setBarPos(null);
+    const wr = wrap.getBoundingClientRect();
+    if (wr.width < 560) return setBarPos("docked");
+    let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+    p.selected.forEach((k) => {
+      const el = svg.querySelector(`[data-panel="${k}"] .ws-door-hit`);
+      if (!el) return;
+      const bb = el.getBoundingClientRect();
+      l = Math.min(l, bb.left); t = Math.min(t, bb.top); r = Math.max(r, bb.right); b = Math.max(b, bb.bottom);
+    });
+    if (!Number.isFinite(l)) return setBarPos("docked");
+    const bw = bar?.offsetWidth ?? 340, bh = bar?.offsetHeight ?? 220, gap = 14;
+    const clampTop = (y: number) => Math.max(8, Math.min(wr.height - bh - 8, y));
+    const midY = clampTop((t + b) / 2 - wr.top - bh / 2);
+    if (r - wr.left + gap + bw <= wr.width - 8) return setBarPos({ left: r - wr.left + gap, top: midY });
+    if (l - wr.left - gap - bw >= 8) return setBarPos({ left: l - wr.left - gap - bw, top: midY });
+    setBarPos("docked");
+  }, [p.selected, p.svgRef]);
+
+  useLayoutEffect(() => {
+    placeBar();
+  }, [placeBar, p.design, zoom, p.angle, p.showDims, compare, fullscreen]);
+
+  useEffect(() => {
+    const stage = stageRef.current, wrap = wrapRef.current;
+    if (!stage || !wrap) return;
+    const ro = new ResizeObserver(placeBar);
+    ro.observe(wrap);
+    stage.addEventListener("scroll", placeBar, { passive: true });
+    return () => {
+      ro.disconnect();
+      stage.removeEventListener("scroll", placeBar);
+    };
+  }, [placeBar]);
 
   useEffect(() => {
     const onChange = () => setFullscreen(document.fullscreenElement === rootRef.current);
@@ -121,7 +167,8 @@ export function Preview(p: Props) {
         </div>
       </div>
 
-      <div className="stage" ref={stageRef} onClick={(e) => e.target === e.currentTarget && p.onBackgroundClick()}>
+      <div className="stage-wrap" ref={wrapRef}>
+      <div className="stage" ref={stageRef} onClick={(e) => (e.target === e.currentTarget || (e.target as Element).closest?.(".stage-inner") === e.target) && p.onBackgroundClick()}>
         <div className="stage-inner" style={{ width: `${zoom * 100}%`, height: `${zoom * 100}%` }}>
           {compare ? (
             <div className="compare">
@@ -138,9 +185,23 @@ export function Preview(p: Props) {
               <span className="tag tag-right">After</span>
             </div>
           ) : (
-            <WardrobeSVG ref={p.svgRef} design={p.design} angle={p.angle} showDims={p.showDims} selected={p.selected} onDoorClick={p.onDoorClick} className="main-svg" />
+            <WardrobeSVG
+              ref={p.svgRef}
+              design={p.design}
+              angle={p.angle}
+              showDims={p.showDims}
+              selected={p.selected}
+              onPanelClick={p.onPanelClick}
+              className="main-svg"
+            />
           )}
         </div>
+      </div>
+      {!compare && p.selected.length > 0 && (
+        <div ref={barRef} className={barPos === "docked" ? "edit-bar-host docked" : "edit-bar-host"} style={barPos && barPos !== "docked" ? { left: barPos.left, top: barPos.top } : { visibility: barPos ? undefined : "hidden" }}>
+          <PanelEditBar design={p.design} selected={p.selected} panelKeys={p.panelKeys} onApply={p.onApply} onSelect={p.onSelect} />
+        </div>
+      )}
       </div>
 
       <div className="stage-foot">
@@ -153,7 +214,7 @@ export function Preview(p: Props) {
           </>
         ) : (
           <span>
-            {model.name} · {p.selected.length ? `Shutter ${p.selected.map((i) => i + 1).join(", ")} selected` : "Click a shutter to customise it"} · Ctrl + scroll to zoom
+            {model.name} · {p.selected.length ? `${p.selected.map(panelName).join(", ")} selected` : "Click any shutter, loft shutter or drawer to edit it"} · Ctrl + scroll to zoom
           </span>
         )}
       </div>
